@@ -1,70 +1,96 @@
-# Getting Started with Create React App
+Step 1:
+install react app using
+npx create-react-app .
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Step 2:
+install redux libraries using
+npm i redux react-redux @reduxjs/toolkit
 
-## Available Scripts
+Step 3:
+in Index.js file
+import these redux libraries...
 
-In the project directory, you can run:
+    import { configureStore } from '@reduxjs/toolkit';
+    import { Provider } from 'react-redux';
 
-### `npm start`
+and create a store.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+    const store = configureStore({
+    reducer:{}
+    })
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+and place a <Provider/> component as a parent component on <App /> component in index.js file
 
-### `npm test`
+        <Provider store={store}>
+            <App />
+        </Provider>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+step 4:
 
-### `npm run build`
+create a new component user.js in feature folder
+in that import a @reduxjs/toolkit feature {createSlices}, and create a userSlice component with it,
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+        import { createSlice } from '@reduxjs/toolkit';
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+        const userSlice = createSlice({
+            name: "user",
+            initialState:{"value":{"name":"","age":0,"email":""}},
+            reducer:{
+                login: (state, action)=>{
+                    state.value = action.payload;
+                }
+            }
 
-### `npm run eject`
+        })
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+        export default userSlice;
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Step 5:
+import that userSlice in index.js file and add it in reducer object in global store reducer
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+    import userReducer from './features/user';
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+    const store = configureStore({
+        reducer:{
+            user: userReducer
+        }
+    })
 
-## Learn More
+step 6:
+in Profile.js component import a { useSelector } hook from 'react-redux and create a state from where we can get the data when the state changes.
+and put the changed value on its places.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    import { useSelector } from 'react-redux';
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+    const user = useSelector(state => state.user.value)
 
-### Code Splitting
+     <div>
+        <h1>User Profile</h1>
+        <h3>Name : {user.name}</h3>
+        <h3>Age : {user.age}</h3>
+        <h3>Email : {user.email}</h3>
+    </div>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Step 7:
+create an action for login button in user.js and export it.
 
-### Analyzing the Bundle Size
+    export const { login, logout } = userSlice.actions;
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Step 8:
+in Login Component import a {useDispatch} feature from 'react-redux' and create a dispatch function through it,
 
-### Making a Progressive Web App
+    import {useDispatch } from 'react-redux';
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+    const dispatch = useDispatch();
 
-### Advanced Configuration
+after that import the action feature from user.js file and dispatch that on login button using onClick()
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+    import { login } from '../features/user'
 
-### Deployment
+    <button
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+        onClick={()=>{
+            dispatch(login({name:"hamzah",age:25,email:"hamzahashmi.office@gmail.com"}))}}> Login
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+    </button>
