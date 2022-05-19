@@ -94,3 +94,14 @@ after that import the action feature from user.js file and dispatch that on logi
             dispatch(login({name:"hamzah",age:25,email:"hamzahashmi.office@gmail.com"}))}}> Login
 
     </button>
+
+Step 9:
+create a logout action in user.js and export it
+import that action in login.js file and create a button and implement that action
+
+        <button
+
+            onClick={()=>{
+                dispatch(logout())}}> Logout
+
+        </button>
